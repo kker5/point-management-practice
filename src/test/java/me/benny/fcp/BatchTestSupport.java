@@ -1,7 +1,8 @@
-package me.benny.fcp.expire.job;
+package me.benny.fcp;
 
 import me.benny.fcp.message.MessageRepository;
 import me.benny.fcp.point.PointRepository;
+import me.benny.fcp.point.reservation.PointReservationRepository;
 import me.benny.fcp.point.wallet.PointWalletRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.batch.core.Job;
@@ -19,7 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
         properties = {"spring.batch.job.enabled=false"}
 )
 @ActiveProfiles("test")
-abstract class BatchTestSupport {
+public abstract class BatchTestSupport {
 
     @Autowired
     protected JobRepository jobRepository;
@@ -31,6 +32,8 @@ abstract class BatchTestSupport {
     protected PointRepository pointRepository;
     @Autowired
     protected MessageRepository messageRepository;
+    @Autowired
+    protected PointReservationRepository pointReservationRepository;
 
     protected JobExecution launchJob(Job job, JobParameters jobParameters) throws Exception {
         JobLauncherTestUtils jobLauncherTestUtils = new JobLauncherTestUtils();
@@ -43,6 +46,7 @@ abstract class BatchTestSupport {
     @AfterEach
     protected void deleteAll() {
         pointRepository.deleteAll();
+        pointReservationRepository.deleteAll();
         pointWalletRepository.deleteAll();
         messageRepository.deleteAll();
     }

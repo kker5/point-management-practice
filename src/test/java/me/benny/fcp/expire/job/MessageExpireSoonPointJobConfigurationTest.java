@@ -1,5 +1,6 @@
 package me.benny.fcp.expire.job;
 
+import me.benny.fcp.BatchTestSupport;
 import me.benny.fcp.message.Message;
 import me.benny.fcp.message.MessageRepository;
 import me.benny.fcp.point.Point;

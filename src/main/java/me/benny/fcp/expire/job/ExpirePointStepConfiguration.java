@@ -1,6 +1,5 @@
 package me.benny.fcp.expire.job;
 
-import lombok.extern.slf4j.Slf4j;
 import me.benny.fcp.point.Point;
 import me.benny.fcp.point.PointRepository;
 import me.benny.fcp.point.wallet.PointWalletRepository;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @Configuration
-@Slf4j
 public class ExpirePointStepConfiguration {
     @Bean
     @JobScope

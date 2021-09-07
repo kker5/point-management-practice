@@ -1,7 +1,6 @@
 package me.benny.fcp;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * ex)
  * java -jar batch.jar --job.name=expirePointJob today=2021-01-01
  */
-@EnableBatchProcessing
 @SpringBootApplication
 @Slf4j
 public class ExpirePointApplication {

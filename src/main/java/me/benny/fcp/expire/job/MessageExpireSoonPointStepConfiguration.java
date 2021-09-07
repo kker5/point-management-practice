@@ -1,6 +1,5 @@
 package me.benny.fcp.expire.job;
 
-import lombok.extern.slf4j.Slf4j;
 import me.benny.fcp.expire.job.listener.InputExpireSoonPointAlarmCriteriaDateStepListener;
 import me.benny.fcp.message.Message;
 import me.benny.fcp.point.ExpiredPointSummary;
@@ -24,7 +23,6 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @Configuration
-@Slf4j
 public class MessageExpireSoonPointStepConfiguration {
     @Bean
     @JobScope

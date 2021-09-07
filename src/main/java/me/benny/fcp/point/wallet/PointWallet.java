@@ -30,4 +30,10 @@ public class PointWallet extends IdEntity {
             this.amount = this.amount.subtract(point.getAmount());
         }
     }
+
+    public void earn(Point point) {
+        if (this.getId().equals(point.getPointWallet().getId()) && !point.isUsed() && !point.isExpired()) {
+            this.amount = this.amount.add(point.getAmount());
+        }
+    }
 }
