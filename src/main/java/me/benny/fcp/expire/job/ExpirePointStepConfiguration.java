@@ -1,9 +1,9 @@
 package me.benny.fcp.expire.job;
 
 import lombok.extern.slf4j.Slf4j;
-import me.benny.fcp.expire.point.Point;
-import me.benny.fcp.expire.point.PointRepository;
-import me.benny.fcp.expire.point.wallet.PointWalletRepository;
+import me.benny.fcp.point.Point;
+import me.benny.fcp.point.PointRepository;
+import me.benny.fcp.point.wallet.PointWalletRepository;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;

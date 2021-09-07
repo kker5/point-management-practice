@@ -1,10 +1,10 @@
-package me.benny.fcp.expire.point;
+package me.benny.fcp.point;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.benny.fcp.expire.point.wallet.PointWallet;
+import me.benny.fcp.point.wallet.PointWallet;
 
 import javax.persistence.*;
 import java.math.BigInteger;

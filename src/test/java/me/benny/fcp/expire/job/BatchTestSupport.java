@@ -1,8 +1,8 @@
 package me.benny.fcp.expire.job;
 
-import me.benny.fcp.expire.message.MessageRepository;
-import me.benny.fcp.expire.point.PointRepository;
-import me.benny.fcp.expire.point.wallet.PointWalletRepository;
+import me.benny.fcp.message.MessageRepository;
+import me.benny.fcp.point.PointRepository;
+import me.benny.fcp.point.wallet.PointWalletRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;

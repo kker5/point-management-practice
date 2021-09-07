@@ -1,4 +1,4 @@
-package me.benny.fcp.expire.message;
+package me.benny.fcp.message;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

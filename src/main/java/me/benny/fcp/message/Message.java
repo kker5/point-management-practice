@@ -1,10 +1,10 @@
-package me.benny.fcp.expire.message;
+package me.benny.fcp.message;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.benny.fcp.expire.point.IdEntity;
+import me.benny.fcp.point.IdEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

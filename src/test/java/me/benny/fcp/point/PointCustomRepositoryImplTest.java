@@ -1,7 +1,7 @@
-package me.benny.fcp.expire.point;
+package me.benny.fcp.point;
 
-import me.benny.fcp.expire.point.wallet.PointWallet;
-import me.benny.fcp.expire.point.wallet.PointWalletRepository;
+import me.benny.fcp.point.wallet.PointWallet;
+import me.benny.fcp.point.wallet.PointWalletRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

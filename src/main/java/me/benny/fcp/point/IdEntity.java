@@ -1,4 +1,4 @@
-package me.benny.fcp.expire.point;
+package me.benny.fcp.point;
 
 import lombok.Getter;
 

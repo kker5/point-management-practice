@@ -1,4 +1,4 @@
-package me.benny.fcp.expire.point.wallet;
+package me.benny.fcp.point.wallet;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
