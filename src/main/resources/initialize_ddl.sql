@@ -1,5 +1,6 @@
-drop table point_wallet;
 drop table point;
+drop table point_reservation;
+drop table point_wallet;
 drop table message;
 
 CREATE TABLE `point_wallet` (
@@ -27,6 +28,16 @@ CREATE TABLE `point`(
   `point_wallet_id` bigint NOT NULL COMMENT '포인트 지갑 ID',
   PRIMARY KEY (`id`)
 ) COMMENT '포인트적립내역';
+
+CREATE TABLE `point_reservation` (
+  `id` bigint NOT NULL COMMENT 'ID',
+  `amount` decimal(19) NOT NULL COMMENT '적립금액',
+  `available_days` int NOT NULL COMMENT '유효기간',
+  `earned_date` date NOT NULL COMMENT '적립일자',
+  `is_executed` tinyint NOT NULL COMMENT '적용여부',
+  `point_wallet_id` bigint NOT NULL COMMENT '포인트 지갑 ID',
+  PRIMARY KEY (`id`)
+) COMMENT '포인트 예약';
 
 insert into point_wallet values (null, 1000, 'user123');
 insert into point values(null,1,'2021-09-01','2021-09-03',0,0,1);
