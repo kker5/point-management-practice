@@ -35,6 +35,8 @@ class ExpirePointJobConfigurationTest extends BatchTestSupport {
         pointRepository.save(new Point(pointWallet, BigInteger.valueOf(1000), earnDate, expireDate));
         pointRepository.save(new Point(pointWallet, BigInteger.valueOf(1000), earnDate, expireDate));
         pointRepository.save(new Point(pointWallet, BigInteger.valueOf(1000), earnDate, expireDate));
+        pointRepository.save(new Point(pointWallet, BigInteger.valueOf(1000), earnDate, expireDate, true, false));
+        pointRepository.save(new Point(pointWallet, BigInteger.valueOf(1000), earnDate, expireDate, false, true));
         pointRepository.save(new Point(pointWallet, BigInteger.valueOf(1000), earnDate, tomorrow));
         pointRepository.save(new Point(pointWallet, BigInteger.valueOf(1000), earnDate, tomorrow));
         pointRepository.save(new Point(pointWallet, BigInteger.valueOf(1000), earnDate, tomorrow));
@@ -44,8 +46,8 @@ class ExpirePointJobConfigurationTest extends BatchTestSupport {
         JobExecution execution = launchJob(expirePointJob, jobParameters);
         List<Point> points = pointRepository.findAll();
         then(execution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
-        then(points.size()).isEqualTo(6);
-        then(points.stream().filter(Point::isExpired).count()).isEqualTo(3);
+        then(points.stream().filter(Point::isUsed)).hasSize(1);
+        then(points.stream().filter(Point::isExpired)).hasSize(4);
         PointWallet changedPointWallet = pointWalletRepository.findById(pointWallet.getId()).orElseGet(null);
         then(changedPointWallet).isNotNull();
         then(changedPointWallet.getAmount()).isEqualByComparingTo(BigInteger.valueOf(3000));

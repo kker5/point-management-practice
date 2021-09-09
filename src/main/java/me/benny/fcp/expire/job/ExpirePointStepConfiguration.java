@@ -52,7 +52,7 @@ public class ExpirePointStepConfiguration {
         return new JpaPagingItemReaderBuilder<Point>()
                 .name("expirePointItemReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("select p from Point p where p.expireDate < :today")
+                .queryString("select p from Point p where p.expireDate < :today and used = false and expired = false")
                 .parameterValues(Map.of("today", today))
                 .pageSize(1000)
                 .build();
