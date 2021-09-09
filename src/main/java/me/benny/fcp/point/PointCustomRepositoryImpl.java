@@ -51,7 +51,7 @@ public class PointCustomRepositoryImpl extends QuerydslRepositorySupport impleme
                 )
                 .where(point.expired.eq(false))
                 .where(point.used.eq(false))
-                .where(point.expireDate.loe(expireDate))
+                .where(point.expireDate.lt(expireDate))
                 .groupBy(point.pointWallet);
         List<ExpiredPointSummary> expiredPointList = getQuerydsl().applyPagination(pageable, query).fetch();
         long elementCount = query.fetchCount();
