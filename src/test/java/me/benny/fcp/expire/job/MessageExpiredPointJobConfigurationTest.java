@@ -54,11 +54,11 @@ class MessageExpiredPointJobConfigurationTest extends BatchTestSupport {
         Message message1 = messages.stream().filter(item -> item.getUserId().equals("user1")).findFirst().orElseGet(null);
         then(message1).isNotNull();
         then(message1.getTitle()).isEqualTo("3000 포인트 만료");
-        then(message1.getContent()).isEqualTo("2021-09-05 기준 3000 포인트가 만료되었습니다.");
+        then(message1.getContent()).isEqualTo("2021-09-06 기준 3000 포인트가 만료되었습니다.");
         Message message2 = messages.stream().filter(item -> item.getUserId().equals("user2")).findFirst().orElseGet(null);
         then(message2).isNotNull();
         then(message2.getTitle()).isEqualTo("2000 포인트 만료");
-        then(message2.getContent()).isEqualTo("2021-09-05 기준 2000 포인트가 만료되었습니다.");
+        then(message2.getContent()).isEqualTo("2021-09-06 기준 2000 포인트가 만료되었습니다.");
     }
 
     @Test

@@ -66,11 +66,11 @@ public class MessageExpiredPointStepConfiguration {
     @Bean
     @StepScope
     public ItemProcessor<ExpiredPointSummary, Message> messageExpiredPointItemProcessor(
-            @Value("#{T(java.time.LocalDate).parse(stepExecutionContext[alarmCriteriaDate])}")
-                    LocalDate alarmCriteriaDate
+            @Value("#{T(java.time.LocalDate).parse(jobParameters[today])}")
+                    LocalDate today
     ) {
         return summary -> Message.expiredPointMessageInstance(
-                summary.getUserId(), alarmCriteriaDate, summary.getAmount()
+                summary.getUserId(), today, summary.getAmount()
         );
     }
 
