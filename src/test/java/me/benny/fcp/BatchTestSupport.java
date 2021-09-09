@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(
-        properties = {"spring.batch.job.enabled=false"}
-)
+@SpringBootTest
 @ActiveProfiles("test")
 public abstract class BatchTestSupport {
 
