@@ -30,8 +30,8 @@ CREATE TABLE `point`(
 ) COMMENT '포인트적립내역';
 
 CREATE TABLE `point_reservation` (
-  `id` bigint NOT NULL COMMENT 'ID',
-  `amount` decimal(19) NOT NULL COMMENT '적립금액',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `amount` bigint NOT NULL COMMENT '적립금액',
   `available_days` int NOT NULL COMMENT '유효기간',
   `earned_date` date NOT NULL COMMENT '적립일자',
   `is_executed` tinyint NOT NULL COMMENT '적용여부',
