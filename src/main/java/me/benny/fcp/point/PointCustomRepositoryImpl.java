@@ -23,7 +23,7 @@ public class PointCustomRepositoryImpl extends QuerydslRepositorySupport impleme
                 .select(
                         new QExpiredPointSummary(
                                 point.pointWallet.userId,
-                                point.amount.sum().coalesce(BigInteger.ONE)
+                                point.amount.sum().coalesce(BigInteger.ZERO)
                         )
                 )
                 .where(point.expired.eq(true))
@@ -46,7 +46,7 @@ public class PointCustomRepositoryImpl extends QuerydslRepositorySupport impleme
                 .select(
                         new QExpiredPointSummary(
                                 point.pointWallet.userId,
-                                point.amount.sum().coalesce(BigInteger.ONE)
+                                point.amount.sum().coalesce(BigInteger.ZERO)
                         )
                 )
                 .where(point.expired.eq(false))
