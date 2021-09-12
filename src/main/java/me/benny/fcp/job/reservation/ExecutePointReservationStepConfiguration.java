@@ -1,6 +1,6 @@
-package me.benny.fcp.reserve.job;
+package me.benny.fcp.job.reservation;
 
-import me.benny.fcp.expire.job.listener.InputExpireSoonPointAlarmCriteriaDateStepListener;
+import me.benny.fcp.job.listener.InputExpireSoonPointAlarmCriteriaDateStepListener;
 import me.benny.fcp.point.Point;
 import me.benny.fcp.point.PointRepository;
 import me.benny.fcp.point.reservation.PointReservation;

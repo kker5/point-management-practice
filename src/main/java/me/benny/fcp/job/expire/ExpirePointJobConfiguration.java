@@ -1,6 +1,6 @@
-package me.benny.fcp.expire.job;
+package me.benny.fcp.job.expire;
 
-import me.benny.fcp.expire.job.validator.TodayJobParameterValidator;
+import me.benny.fcp.job.validator.TodayJobParameterValidator;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;

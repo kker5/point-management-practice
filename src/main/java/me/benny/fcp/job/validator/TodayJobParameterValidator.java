@@ -1,4 +1,4 @@
-package me.benny.fcp.expire.job.validator;
+package me.benny.fcp.job.validator;
 
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;

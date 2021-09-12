@@ -1,4 +1,4 @@
-package me.benny.fcp.reserve.job;
+package me.benny.fcp.job.reservation;
 
 import me.benny.fcp.BatchTestSupport;
 import me.benny.fcp.point.Point;

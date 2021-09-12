@@ -1,6 +1,6 @@
-package me.benny.fcp.reserve.job;
+package me.benny.fcp.job.expire;
 
-import me.benny.fcp.expire.job.validator.TodayJobParameterValidator;
+import me.benny.fcp.job.validator.TodayJobParameterValidator;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -9,21 +9,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 포인트 예약을 반영함
+ * 사용하지 않은 포인트 중에 만료 예정(7일이내)인 포인트들을 메시지로 알리도록 message 테이블에 저장하는 Job
  */
 @Configuration
-public class ExecutePointReservationJobConfiguration {
+public class MessageExpireSoonPointJobConfiguration {
     @Bean
-    public Job executePointReservationJob(
+    public Job messageExpireSoonPointJob(
             JobBuilderFactory jobBuilderFactory,
             TodayJobParameterValidator validator,
-            Step executePointReservationStep
+            Step messageExpireSoonPointStep
     ) {
         return jobBuilderFactory
-                .get("executePointReservationJob")
+                .get("messageExpireSoonPointJob")
                 .validator(validator)
                 .incrementer(new RunIdIncrementer())
-                .start(executePointReservationStep)
+                .start(messageExpireSoonPointStep)
                 .build();
     }
 }

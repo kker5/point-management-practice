@@ -1,4 +1,4 @@
-package me.benny.fcp.expire.job;
+package me.benny.fcp.job.expire;
 
 import me.benny.fcp.BatchTestSupport;
 import me.benny.fcp.message.Message;
@@ -16,26 +16,26 @@ import java.util.List;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-class MessageExpiredPointJobConfigurationTest extends BatchTestSupport {
+class MessageExpireSoonPointJobConfigurationTest extends BatchTestSupport {
     @Autowired
-    Job messageExpiredPointJob;
+    Job messageExpireSoonPointJob;
     @Autowired
     MessageRepository messageRepository;
 
     @Test
-    void messageExpiredPointJob() throws Exception {
+    void messageToExpirePointJob() throws Exception {
         // given
         LocalDate earnDate = LocalDate.of(2021, 1, 1);
-        LocalDate expireDate = LocalDate.of(2021, 9, 5);
-        LocalDate notExpireDate = LocalDate.of(2025, 12, 31);
+        LocalDate expireDate = LocalDate.of(2021, 9, 4);
+        LocalDate notExpireDate = LocalDate.of(2021, 9, 10);
         PointWallet pointWallet1 = pointWalletRepository.save(
                 new PointWallet("user1", BigInteger.valueOf(3000))
         );
         PointWallet pointWallet2 = pointWalletRepository.save(
-                new PointWallet("user2", BigInteger.ZERO)
+                new PointWallet("user2", BigInteger.valueOf(2000))
         );
-        pointRepository.save(new Point(pointWallet2, BigInteger.valueOf(1000), earnDate, expireDate, false, true));
-        pointRepository.save(new Point(pointWallet2, BigInteger.valueOf(1000), earnDate, expireDate, false, true));
+        pointRepository.save(new Point(pointWallet2, BigInteger.valueOf(1000), earnDate, notExpireDate));
+        pointRepository.save(new Point(pointWallet2, BigInteger.valueOf(1000), earnDate, notExpireDate));
         pointRepository.save(new Point(pointWallet1, BigInteger.valueOf(1000), earnDate, expireDate, false, true));
         pointRepository.save(new Point(pointWallet1, BigInteger.valueOf(1000), earnDate, expireDate, false, true));
         pointRepository.save(new Point(pointWallet1, BigInteger.valueOf(1000), earnDate, expireDate, false, true));
@@ -44,30 +44,30 @@ class MessageExpiredPointJobConfigurationTest extends BatchTestSupport {
         pointRepository.save(new Point(pointWallet1, BigInteger.valueOf(1000), earnDate, notExpireDate));
         // when
         JobParameters jobParameters = new JobParametersBuilder()
-                .addString("today", "2021-09-06")
+                .addString("today", "2021-09-05")
                 .toJobParameters();
-        JobExecution execution = launchJob(messageExpiredPointJob, jobParameters);
+        JobExecution execution = launchJob(messageExpireSoonPointJob, jobParameters);
         // then
         then(execution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
         List<Message> messages = messageRepository.findAll();
         then(messages).hasSize(2);
         Message message1 = messages.stream().filter(item -> item.getUserId().equals("user1")).findFirst().orElseGet(null);
         then(message1).isNotNull();
-        then(message1.getTitle()).isEqualTo("3000 포인트 만료");
-        then(message1.getContent()).isEqualTo("2021-09-06 기준 3000 포인트가 만료되었습니다.");
+        then(message1.getTitle()).isEqualTo("3000 포인트 만료 예정");
+        then(message1.getContent()).isEqualTo("2021-09-12 까지 3000 포인트가 만료 예정입니다.");
         Message message2 = messages.stream().filter(item -> item.getUserId().equals("user2")).findFirst().orElseGet(null);
         then(message2).isNotNull();
-        then(message2.getTitle()).isEqualTo("2000 포인트 만료");
-        then(message2.getContent()).isEqualTo("2021-09-06 기준 2000 포인트가 만료되었습니다.");
+        then(message2.getTitle()).isEqualTo("2000 포인트 만료 예정");
+        then(message2.getContent()).isEqualTo("2021-09-12 까지 2000 포인트가 만료 예정입니다.");
     }
 
     @Test
-    void messageExpiredPointJob_no_parameter() throws Exception {
+    void messageToExpirePointJob_no_parameter() throws Exception {
         // given
         // when & then
         Assertions.assertThrows(
                 JobParametersInvalidException.class,
-                () -> launchJob(messageExpiredPointJob, null),
+                () -> launchJob(messageExpireSoonPointJob, null),
                 "job parameter today is required"
         );
     }
