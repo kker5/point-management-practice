@@ -1,6 +1,5 @@
 package me.benny.fcp.job.reservation;
 
-import me.benny.fcp.job.listener.InputExpireSoonPointAlarmCriteriaDateStepListener;
 import me.benny.fcp.point.Point;
 import me.benny.fcp.point.PointRepository;
 import me.benny.fcp.point.reservation.PointReservation;
@@ -32,7 +31,6 @@ public class ExecutePointReservationStepConfiguration {
     public Step executePointReservationStep(
             StepBuilderFactory stepBuilderFactory,
             PlatformTransactionManager platformTransactionManager,
-            InputExpireSoonPointAlarmCriteriaDateStepListener listener,
             JpaPagingItemReader<PointReservation> executePointReservationItemReader,
             ItemProcessor<PointReservation, Pair<PointReservation, Point>> executePointReservationItemProcessor,
             ItemWriter<Pair<PointReservation, Point>> executePointReservationItemWriter
@@ -41,7 +39,6 @@ public class ExecutePointReservationStepConfiguration {
                 .get("executePointReservationStep")
                 .allowStartIfComplete(true)
                 .transactionManager(platformTransactionManager)
-                .listener(listener)
                 .<PointReservation, Pair<PointReservation, Point>>chunk(1000)
                 .reader(executePointReservationItemReader)
                 .processor(executePointReservationItemProcessor)
