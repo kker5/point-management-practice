@@ -1,4 +1,4 @@
-package me.benny.fcp.job.expire;
+package me.benny.fcp.job.expire.message;
 
 import me.benny.fcp.BatchTestSupport;
 import me.benny.fcp.message.Message;

@@ -1,6 +1,6 @@
-package me.benny.fcp.job.expire;
+package me.benny.fcp.job.expire.message;
 
-import me.benny.fcp.job.listener.InputExpireSoonPointAlarmCriteriaDateStepListener;
+import me.benny.fcp.job.listener.InputExpiredPointAlarmCriteriaDateStepListener;
 import me.benny.fcp.message.Message;
 import me.benny.fcp.point.ExpiredPointSummary;
 import me.benny.fcp.point.PointRepository;
@@ -23,40 +23,40 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @Configuration
-public class MessageExpireSoonPointStepConfiguration {
+public class MessageExpiredPointStepConfiguration {
     @Bean
     @JobScope
-    public Step messageExpireSoonPointStep(
+    public Step messageExpiredPointStep(
             StepBuilderFactory stepBuilderFactory,
             PlatformTransactionManager platformTransactionManager,
-            InputExpireSoonPointAlarmCriteriaDateStepListener listener,
-            RepositoryItemReader<ExpiredPointSummary> messageExpireSoonPointItemReader,
-            ItemProcessor<ExpiredPointSummary, Message> messageExpireSoonPointItemProcessor,
-            JpaItemWriter<Message> messageExpireSoonPointItemWriter
+            InputExpiredPointAlarmCriteriaDateStepListener listener,
+            RepositoryItemReader<ExpiredPointSummary> messageExpiredPointItemReader,
+            ItemProcessor<ExpiredPointSummary, Message> messageExpiredPointItemProcessor,
+            JpaItemWriter<Message> messageExpiredPointItemWriter
     ) {
         return stepBuilderFactory
-                .get("messageExpireSoonPointStep")
+                .get("messageExpiredPointStep")
                 .allowStartIfComplete(true)
                 .transactionManager(platformTransactionManager)
                 .listener(listener)
                 .<ExpiredPointSummary, Message>chunk(1000)
-                .reader(messageExpireSoonPointItemReader)
-                .processor(messageExpireSoonPointItemProcessor)
-                .writer(messageExpireSoonPointItemWriter)
+                .reader(messageExpiredPointItemReader)
+                .processor(messageExpiredPointItemProcessor)
+                .writer(messageExpiredPointItemWriter)
                 .build();
     }
 
     @Bean
     @StepScope
-    public RepositoryItemReader<ExpiredPointSummary> messageExpireSoonPointItemReader(
+    public RepositoryItemReader<ExpiredPointSummary> messageExpiredPointItemReader(
             PointRepository pointRepository,
             @Value("#{T(java.time.LocalDate).parse(stepExecutionContext[alarmCriteriaDate])}")
                     LocalDate alarmCriteriaDate
     ) {
         return new RepositoryItemReaderBuilder<ExpiredPointSummary>()
-                .name("messageExpireSoonPointItemReader")
+                .name("messageExpiredPointItemReader")
                 .repository(pointRepository)
-                .methodName("sumBeforeExpireDate")
+                .methodName("sumByExpiredDate")
                 .pageSize(1000)
                 .arguments(alarmCriteriaDate)
                 .sorts(Map.of("pointWallet", Sort.Direction.ASC))
@@ -65,20 +65,18 @@ public class MessageExpireSoonPointStepConfiguration {
 
     @Bean
     @StepScope
-    public ItemProcessor<ExpiredPointSummary, Message> messageExpireSoonPointItemProcessor(
-            @Value("#{T(java.time.LocalDate).parse(stepExecutionContext[alarmCriteriaDate])}")
-                    LocalDate alarmCriteriaDate
+    public ItemProcessor<ExpiredPointSummary, Message> messageExpiredPointItemProcessor(
+            @Value("#{T(java.time.LocalDate).parse(jobParameters[today])}")
+                    LocalDate today
     ) {
-        return summary -> Message.expireSoonPointMessageInstance(
-                summary.getUserId(),
-                alarmCriteriaDate,
-                summary.getAmount()
+        return summary -> Message.expiredPointMessageInstance(
+                summary.getUserId(), today, summary.getAmount()
         );
     }
 
     @Bean
     @StepScope
-    public JpaItemWriter<Message> messageExpireSoonPointItemWriter(
+    public JpaItemWriter<Message> messageExpiredPointItemWriter(
             EntityManagerFactory entityManagerFactory
     ) {
         JpaItemWriter<Message> jpaItemWriter = new JpaItemWriter<>();
