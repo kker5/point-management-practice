@@ -17,15 +17,13 @@ public class MessageExpiredPointJobConfiguration {
     public Job messageExpiredPointJob(
             JobBuilderFactory jobBuilderFactory,
             TodayJobParameterValidator validator,
-            Step messageExpiredPointStep,
-            Step messageExpireSoonPointStep
+            Step messageExpiredPointStep
     ) {
         return jobBuilderFactory
                 .get("messageExpiredPointJob")
                 .validator(validator)
                 .incrementer(new RunIdIncrementer())
                 .start(messageExpiredPointStep)
-                .next(messageExpireSoonPointStep)
                 .build();
     }
 }
