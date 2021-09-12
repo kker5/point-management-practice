@@ -2,6 +2,7 @@ package me.benny.fcp.job.expire;
 
 import me.benny.fcp.point.Point;
 import me.benny.fcp.point.PointRepository;
+import me.benny.fcp.point.wallet.PointWallet;
 import me.benny.fcp.point.wallet.PointWalletRepository;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -62,8 +63,9 @@ public class ExpirePointStepConfiguration {
     @StepScope
     public ItemProcessor<Point, Point> expirePointItemProcessor() {
         return point -> {
-            point.expire();
-            point.getPointWallet().expire(point);
+            point.setExpired(true);
+            PointWallet wallet = point.getPointWallet();
+            wallet.setAmount(wallet.getAmount().subtract(point.getAmount()));
             return point;
         };
     }

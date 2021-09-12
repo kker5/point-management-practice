@@ -5,6 +5,7 @@ import me.benny.fcp.point.Point;
 import me.benny.fcp.point.PointRepository;
 import me.benny.fcp.point.reservation.PointReservation;
 import me.benny.fcp.point.reservation.PointReservationRepository;
+import me.benny.fcp.point.wallet.PointWallet;
 import me.benny.fcp.point.wallet.PointWalletRepository;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -68,14 +69,15 @@ public class ExecutePointReservationStepConfiguration {
     @StepScope
     public ItemProcessor<PointReservation, Pair<PointReservation, Point>> executePointReservationItemProcessor() {
         return reservation -> {
-            reservation.execute();
+            reservation.setExecuted(true);
             Point earnedPoint = new Point(
                     reservation.getPointWallet(),
                     reservation.getAmount(),
                     reservation.getEarnedDate(),
                     reservation.getExpireDate()
             );
-            earnedPoint.getPointWallet().earn(earnedPoint);
+            PointWallet wallet = earnedPoint.getPointWallet();
+            wallet.setAmount(wallet.getAmount().add(earnedPoint.getAmount()));
             return Pair.of(reservation, earnedPoint);
         };
     }
