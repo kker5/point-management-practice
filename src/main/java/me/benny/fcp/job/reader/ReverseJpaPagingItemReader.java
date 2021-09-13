@@ -95,6 +95,9 @@ public class ReverseJpaPagingItemReader<T> extends ItemStreamSupport implements 
         }
     }
 
+    /**
+     * page 번호에 해당하는 데이터를 가져와서 Page 형식으로 반환합니다.
+     */
     private Page<T> getTargetData(int readPage) {
         return Objects.isNull(query)?Page.empty():query.apply(PageRequest.of(readPage, pageSize, sort));
     }
