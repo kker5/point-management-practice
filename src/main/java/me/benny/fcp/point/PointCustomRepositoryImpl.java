@@ -78,4 +78,15 @@ public class PointCustomRepositoryImpl extends QuerydslRepositorySupport impleme
                 elementCount
         );
     }
+
+    @Override
+    public List<Long> findDistinctWalletIdForExpiredPoint(LocalDate alarmCriteriaDate) {
+        QPoint point = QPoint.point;
+        return from(point)
+                .select(point.pointWallet.id).distinct()
+                .where(point.expired.eq(true))
+                .where(point.used.eq(false))
+                .where(point.expireDate.eq(alarmCriteriaDate))
+                .fetch();
+    }
 }

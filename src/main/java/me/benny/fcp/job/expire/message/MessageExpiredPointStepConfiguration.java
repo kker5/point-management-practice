@@ -8,6 +8,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
@@ -15,6 +16,7 @@ import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -24,6 +26,40 @@ import java.util.Map;
 
 @Configuration
 public class MessageExpiredPointStepConfiguration {
+
+    @Bean
+    @JobScope
+    public Step executePointReservationMasterStep(
+            StepBuilderFactory stepBuilderFactory,
+            Step executePointReservationStep,
+            TaskExecutorPartitionHandler partitionHandler,
+            PointRepository pointRepository,
+            @Value("#{T(java.time.LocalDate).parse(jobParameters[today])}")
+                    LocalDate today
+    ) {
+        return stepBuilderFactory
+                .get("executePointReservationMasterStep")
+                .partitioner(
+                        "executePointReservationStep",
+                        new MessageExpiredPointStepPartitioner(pointRepository,today)
+                )
+                .partitionHandler(partitionHandler)
+                .build();
+    }
+
+    @StepScope
+    @Bean
+    public TaskExecutorPartitionHandler partitionHandler(
+            Step anotherStep,
+            TaskExecutor taskExecutor
+    ) {
+        TaskExecutorPartitionHandler partitionHandler = new TaskExecutorPartitionHandler();
+        partitionHandler.setStep(anotherStep);
+        partitionHandler.setGridSize(8);
+        partitionHandler.setTaskExecutor(taskExecutor);
+        return partitionHandler;
+    }
+
     @Bean
     @JobScope
     public Step messageExpiredPointStep(

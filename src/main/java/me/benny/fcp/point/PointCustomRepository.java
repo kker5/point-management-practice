@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface PointCustomRepository {
     /**
@@ -19,4 +20,6 @@ public interface PointCustomRepository {
 
     // select p from Point p where p.expireDate < :today and used = false and expired = false
     Page<Point> findPointToExpire(LocalDate today, Pageable pageable);
+
+    List<Long> findDistinctWalletIdForExpiredPoint(LocalDate alarmCriteriaDate);
 }
