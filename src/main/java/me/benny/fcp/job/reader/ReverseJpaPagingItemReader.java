@@ -39,7 +39,8 @@ public class ReverseJpaPagingItemReader<T> extends ItemStreamSupport implements 
 
     public void setSort(Sort sort) {
         if (!Objects.isNull(sort)) {
-            //pagination을 마지막 페이지부터 하기때문에 sort direction를 모두 reverse한다.
+            // pagination을 마지막 페이지부터 하기때문에 sort direction를 모두 reverse한다.
+            // ASC <-> DESC
             Iterator<Sort.Order> orderIterator = sort.iterator();
             final List<Sort.Order> reverseOrders = Lists.newLinkedList();
             while (orderIterator.hasNext()) {
@@ -51,34 +52,39 @@ public class ReverseJpaPagingItemReader<T> extends ItemStreamSupport implements 
     }
 
     /**
-     * <p>
-     * totalPage : 전체 페이지 개수
-     * page : 현재페이지(마지막 페이지)
-     * </p>
+     * 스텝 실행 전에 동작함
      */
     @BeforeStep
     public void beforeStep() {
+        // 우리는 뒤에서부터 읽을 것이기 때문에 마지막 페이지 번호를 구해서 page에 넣어줍니다.
         totalPage = getTargetData(0).getTotalPages();
         page = totalPage - 1;
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * read() 함수가 실행되기 전에 동작함
+     */
     @BeforeRead
     public void beforeRead() {
         if (page < 0)
             return;
-        if (readRows.isEmpty())
+        if (readRows.isEmpty()) // 읽은 데이터를 모두 소진하면 db로 부터 데이터를 가져와서 채워놓는다.
             readRows = Lists.newArrayList(getTargetData(page).getContent());
     }
 
     @Override
     public T read() {
+        // null을 반환하면 Reader는 모든 데이터를 소진한걸로 인지하고 종료합니다.
+        // 데이터를 리스트에서 거꾸로 (readRows.size() - 1) 뒤에서부터 빼줍니다.
         return readRows.isEmpty() ? null : readRows.remove(readRows.size() - 1);
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * read() 이후에 동작함
+     */
     @AfterRead
     public void afterRead() {
+        // 데이터가 없다면 page를 1 차감합니다.
         if (readRows.isEmpty()) {
             this.page--;
         }
