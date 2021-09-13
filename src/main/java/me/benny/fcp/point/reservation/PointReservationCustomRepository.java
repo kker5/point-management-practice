@@ -7,4 +7,9 @@ import java.time.LocalDate;
 
 public interface PointReservationCustomRepository {
     Page<PointReservation> findPointReservationToExecute(LocalDate today, Pageable pageable);
+    Page<PointReservation> findPointReservationToExecute(LocalDate today, Long minId, Long maxId, Pageable pageable);
+
+    Long findMinId(LocalDate today);
+
+    Long findMaxId(LocalDate today);
 }

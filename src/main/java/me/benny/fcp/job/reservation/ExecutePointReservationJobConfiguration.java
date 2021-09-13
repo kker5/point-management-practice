@@ -17,13 +17,13 @@ public class ExecutePointReservationJobConfiguration {
     public Job executePointReservationJob(
             JobBuilderFactory jobBuilderFactory,
             TodayJobParameterValidator validator,
-            Step executePointReservationStep
+            Step executePointReservationMasterStep
     ) {
         return jobBuilderFactory
                 .get("executePointReservationJob")
                 .validator(validator)
                 .incrementer(new RunIdIncrementer())
-                .start(executePointReservationStep)
+                .start(executePointReservationMasterStep)
                 .build();
     }
 }
