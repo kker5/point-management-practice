@@ -34,8 +34,8 @@ public class ReverseJpaPagingItemReaderBuilder<T> {
     }
 
     public ReverseJpaPagingItemReader<T> build() {
-        Assert.notNull(this.query, "query is required (CustomRepositoryItemReaderBuilder)");
-        Assert.notNull(this.name, "reader name is required (CustomRepositoryItemReaderBuilder)");
+        Assert.notNull(this.query, "field query is required");
+        Assert.notNull(this.name, "field item reader name is required");
         ReverseJpaPagingItemReader<T> reader = new ReverseJpaPagingItemReader<>();
         reader.setName(this.name);
         reader.setQuery(this.query);
