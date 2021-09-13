@@ -1,5 +1,7 @@
 package me.benny.fcp.job.reservation;
 
+import me.benny.fcp.job.reader.ReverseJpaPagingItemReader;
+import me.benny.fcp.job.reader.ReverseJpaPagingItemReaderBuilder;
 import me.benny.fcp.point.Point;
 import me.benny.fcp.point.PointRepository;
 import me.benny.fcp.point.reservation.PointReservation;
@@ -17,6 +19,7 @@ import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilde
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -31,7 +34,7 @@ public class ExecutePointReservationStepConfiguration {
     public Step executePointReservationStep(
             StepBuilderFactory stepBuilderFactory,
             PlatformTransactionManager platformTransactionManager,
-            JpaPagingItemReader<PointReservation> executePointReservationItemReader,
+            ReverseJpaPagingItemReader<PointReservation> executePointReservationItemReader,
             ItemProcessor<PointReservation, Pair<PointReservation, Point>> executePointReservationItemProcessor,
             ItemWriter<Pair<PointReservation, Point>> executePointReservationItemWriter
     ) {
@@ -48,17 +51,18 @@ public class ExecutePointReservationStepConfiguration {
 
     @Bean
     @StepScope
-    public JpaPagingItemReader<PointReservation> executePointReservationItemReader(
-            EntityManagerFactory entityManagerFactory,
+    public ReverseJpaPagingItemReader<PointReservation> executePointReservationItemReader(
+            PointReservationRepository pointReservationRepository,
             @Value("#{T(java.time.LocalDate).parse(jobParameters[today])}")
                     LocalDate today
     ) {
-        return new JpaPagingItemReaderBuilder<PointReservation>()
-                .name("executePointReservationItemReader")
-                .entityManagerFactory(entityManagerFactory)
-                .queryString("select pr from PointReservation pr where pr.earnedDate <= :today and pr.executed = false")
-                .parameterValues(Map.of("today", today))
+        return new ReverseJpaPagingItemReaderBuilder<PointReservation>()
+                .name("messageExpireSoonPointItemReader")
+                .query(
+                        pageable -> pointReservationRepository.findPointReservationToExecute(today, pageable)
+                )
                 .pageSize(1000)
+                .sort(Sort.by(Sort.Direction.ASC, "id"))
                 .build();
     }
 

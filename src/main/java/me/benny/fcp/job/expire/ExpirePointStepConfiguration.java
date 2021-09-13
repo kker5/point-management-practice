@@ -1,5 +1,7 @@
 package me.benny.fcp.job.expire;
 
+import me.benny.fcp.job.reader.ReverseJpaPagingItemReader;
+import me.benny.fcp.job.reader.ReverseJpaPagingItemReaderBuilder;
 import me.benny.fcp.point.Point;
 import me.benny.fcp.point.PointRepository;
 import me.benny.fcp.point.wallet.PointWallet;
@@ -10,16 +12,13 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
-import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.persistence.EntityManagerFactory;
 import java.time.LocalDate;
-import java.util.Map;
 
 @Configuration
 public class ExpirePointStepConfiguration {
@@ -28,7 +27,7 @@ public class ExpirePointStepConfiguration {
     public Step expirePointStep(
             StepBuilderFactory stepBuilderFactory,
             PlatformTransactionManager platformTransactionManager,
-            JpaPagingItemReader<Point> expirePointItemReader,
+            ReverseJpaPagingItemReader<Point> expirePointItemReader,
             ItemProcessor<Point, Point> expirePointItemProcessor,
             ItemWriter<Point> expirePointItemWriter
     ) {
@@ -45,17 +44,18 @@ public class ExpirePointStepConfiguration {
 
     @Bean
     @StepScope
-    public JpaPagingItemReader<Point> expirePointItemReader(
-            EntityManagerFactory entityManagerFactory,
+    public ReverseJpaPagingItemReader<Point> expirePointItemReader(
+            PointRepository pointRepository,
             @Value("#{T(java.time.LocalDate).parse(jobParameters[today])}")
                     LocalDate today
     ) {
-        return new JpaPagingItemReaderBuilder<Point>()
-                .name("expirePointItemReader")
-                .entityManagerFactory(entityManagerFactory)
-                .queryString("select p from Point p where p.expireDate < :today and used = false and expired = false")
-                .parameterValues(Map.of("today", today))
+        return new ReverseJpaPagingItemReaderBuilder<Point>()
+                .name("messageExpireSoonPointItemReader")
+                .query(
+                        pageable -> pointRepository.findPointToExpire(today, pageable)
+                )
                 .pageSize(1000)
+                .sort(Sort.by(Sort.Direction.ASC, "id"))
                 .build();
     }
 
