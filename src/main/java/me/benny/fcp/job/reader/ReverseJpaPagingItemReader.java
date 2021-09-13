@@ -45,7 +45,12 @@ public class ReverseJpaPagingItemReader<T> extends ItemStreamSupport implements 
             final List<Sort.Order> reverseOrders = Lists.newLinkedList();
             while (orderIterator.hasNext()) {
                 Sort.Order prev = orderIterator.next();
-                reverseOrders.add(new Sort.Order(prev.getDirection().isAscending() ? Sort.Direction.DESC : Sort.Direction.ASC, prev.getProperty()));
+                reverseOrders.add(
+                        new Sort.Order(
+                                prev.getDirection().isAscending() ? Sort.Direction.DESC : Sort.Direction.ASC,
+                                prev.getProperty()
+                        )
+                );
             }
             this.sort = Sort.by(reverseOrders);
         }
